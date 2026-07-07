@@ -108,7 +108,10 @@ export function ProjectsPage() {
 
         <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-heading">
-            <h2>{selectedProject ? '상세' : '새 프로젝트'}</h2>
+            <div>
+              <h2>{selectedProject ? '프로젝트 수정 중' : '새 프로젝트 작성'}</h2>
+              {selectedProject && <p className="mode-note">현재 수정 중: {selectedProject.name}</p>}
+            </div>
           </div>
 
           <label className="field">
@@ -148,7 +151,7 @@ export function ProjectsPage() {
           <div className="form-actions">
             <button className="primary-button" type="submit">
               <Save aria-hidden="true" size={17} />
-              프로젝트 저장
+              {selectedProject ? '수정 완료' : '프로젝트 생성'}
             </button>
             {selectedProject && (
               <button className="danger-button" type="button" onClick={handleDelete}>

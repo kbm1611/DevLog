@@ -159,7 +159,7 @@ describe('App', () => {
     await user.click(screen.getByRole('button', { name: 'H2 콘솔 접속 확인' }));
     await user.selectOptions(screen.getByLabelText('상태'), 'RESOLVED');
     await user.type(screen.getByLabelText('해결 방법'), '콘솔 경로 확인');
-    await user.click(screen.getByRole('button', { name: '이슈 저장' }));
+    await user.click(screen.getByRole('button', { name: '수정 완료' }));
 
     expect(apiMock.updateIssue).toHaveBeenCalledWith(
       1,
@@ -181,6 +181,82 @@ describe('App', () => {
 
     expect(apiMock.updateTodo).toHaveBeenCalledWith(1, expect.objectContaining({ completed: true }));
   });
+
+  it.each([
+    {
+      route: '/projects',
+      heading: 'Projects',
+      createHeading: '새 프로젝트 작성',
+      createButton: '프로젝트 생성',
+      newButton: '새 프로젝트',
+      rowButton: projects[0].name,
+      editHeading: '프로젝트 수정 중',
+      editingLabel: `현재 수정 중: ${projects[0].name}`,
+      deleteButton: '프로젝트 삭제',
+    },
+    {
+      route: '/work-logs',
+      heading: 'Work Logs',
+      createHeading: '새 작업 기록 작성',
+      createButton: '작업 기록 생성',
+      newButton: '새 작업 기록',
+      rowButton: workLogs[0].title,
+      editHeading: '작업 기록 수정 중',
+      editingLabel: `현재 수정 중: ${workLogs[0].title}`,
+      deleteButton: '작업 기록 삭제',
+    },
+    {
+      route: '/issues',
+      heading: 'Issues',
+      createHeading: '새 이슈 작성',
+      createButton: '이슈 생성',
+      newButton: '새 이슈',
+      rowButton: issues[0].title,
+      editHeading: '이슈 수정 중',
+      editingLabel: `현재 수정 중: ${issues[0].title}`,
+      deleteButton: '이슈 삭제',
+    },
+    {
+      route: '/todos',
+      heading: 'Todos',
+      createHeading: '새 할 일 작성',
+      createButton: '할 일 생성',
+      newButton: '새 할 일',
+      rowButton: todos[0].content,
+      editHeading: '할 일 수정 중',
+      editingLabel: `현재 수정 중: ${todos[0].content}`,
+      deleteButton: '할 일 삭제',
+    },
+  ])(
+    'distinguishes create and edit modes on $heading',
+    async ({ route, heading, createHeading, createButton, newButton, rowButton, editHeading, editingLabel, deleteButton }) => {
+      const user = userEvent.setup();
+
+      render(
+        <MemoryRouter initialEntries={[route]}>
+          <App />
+        </MemoryRouter>,
+      );
+
+      await screen.findByRole('heading', { name: heading });
+
+      expect(screen.getByRole('heading', { name: createHeading })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: createButton })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: newButton })).toBeInTheDocument();
+
+      expect(screen.queryByRole('button', { name: `${rowButton} 수정` })).not.toBeInTheDocument();
+      await user.click(await screen.findByRole('button', { name: rowButton }));
+
+      expect(screen.getByRole('heading', { name: editHeading })).toBeInTheDocument();
+      expect(screen.getByText(editingLabel)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: newButton })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: '새로 작성' })).not.toBeInTheDocument();
+
+      const actionButtons = screen.getAllByRole('button').map((button) => button.textContent?.trim());
+      expect(actionButtons).toEqual(expect.arrayContaining(['수정 완료', deleteButton]));
+      expect(actionButtons.indexOf('수정 완료')).toBeLessThan(actionButtons.indexOf(deleteButton));
+    },
+  );
 
   it('generates a weekly report and shows copy-ready text', async () => {
     const user = userEvent.setup();

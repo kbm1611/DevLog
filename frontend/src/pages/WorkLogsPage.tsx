@@ -1,4 +1,4 @@
-import { Save, Trash2 } from 'lucide-react';
+import { Plus, Save, Trash2 } from 'lucide-react';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import {
   createWorkLog,
@@ -69,6 +69,14 @@ export function WorkLogsPage() {
     });
   }
 
+  function startNewWorkLog() {
+    setSelectedId(null);
+    setForm({
+      ...emptyForm,
+      projectId: projects[0]?.id ?? emptyForm.projectId,
+    });
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -92,11 +100,7 @@ export function WorkLogsPage() {
     }
 
     await deleteWorkLog(selectedWorkLog.id);
-    setSelectedId(null);
-    setForm({
-      ...emptyForm,
-      projectId: projects[0]?.id ?? emptyForm.projectId,
-    });
+    startNewWorkLog();
     await refreshWorkLogs();
   }
 
@@ -107,6 +111,9 @@ export function WorkLogsPage() {
           <h1>Work Logs</h1>
           <p>날짜와 프로젝트별 작업 기록을 관리합니다.</p>
         </div>
+        <button className="icon-button" type="button" onClick={startNewWorkLog} aria-label="새 작업 기록">
+          <Plus aria-hidden="true" size={18} />
+        </button>
       </header>
 
       <div className="filters">
@@ -158,7 +165,10 @@ export function WorkLogsPage() {
 
         <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-heading">
-            <h2>{selectedWorkLog ? '상세' : '새 작업 기록'}</h2>
+            <div>
+              <h2>{selectedWorkLog ? '작업 기록 수정 중' : '새 작업 기록 작성'}</h2>
+              {selectedWorkLog && <p className="mode-note">현재 수정 중: {selectedWorkLog.title}</p>}
+            </div>
           </div>
 
           <label className="field">
@@ -228,7 +238,7 @@ export function WorkLogsPage() {
           <div className="form-actions">
             <button className="primary-button" type="submit">
               <Save aria-hidden="true" size={17} />
-              작업 기록 저장
+              {selectedWorkLog ? '수정 완료' : '작업 기록 생성'}
             </button>
             {selectedWorkLog && (
               <button className="danger-button" type="button" onClick={handleDelete}>

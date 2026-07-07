@@ -139,7 +139,10 @@ export function TodosPage() {
 
         <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-heading">
-            <h2>{selectedTodo ? '상세' : '새 할 일'}</h2>
+            <div>
+              <h2>{selectedTodo ? '할 일 수정 중' : '새 할 일 작성'}</h2>
+              {selectedTodo && <p className="mode-note">현재 수정 중: {selectedTodo.content}</p>}
+            </div>
           </div>
 
           <label className="field">
@@ -194,7 +197,7 @@ export function TodosPage() {
           <div className="form-actions">
             <button className="primary-button" type="submit">
               <Save aria-hidden="true" size={17} />
-              할 일 저장
+              {selectedTodo ? '수정 완료' : '할 일 생성'}
             </button>
             {selectedTodo && (
               <button className="danger-button" type="button" onClick={handleDelete}>

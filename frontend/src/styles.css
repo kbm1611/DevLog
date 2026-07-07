@@ -166,6 +166,13 @@ button {
   color: #607086;
 }
 
+.mode-note {
+  margin: 5px 0 0;
+  color: #607086;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
 .item-list {
   display: grid;
   gap: 8px;
@@ -440,4 +447,5 @@ button {
   .meta-grid {
     grid-template-columns: 1fr;
   }
+
 }

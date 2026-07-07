@@ -168,7 +168,10 @@ export function IssuesPage() {
 
         <form className="panel form-panel" onSubmit={handleSubmit}>
           <div className="panel-heading">
-            <h2>{selectedIssue ? '상세' : '새 이슈'}</h2>
+            <div>
+              <h2>{selectedIssue ? '이슈 수정 중' : '새 이슈 작성'}</h2>
+              {selectedIssue && <p className="mode-note">현재 수정 중: {selectedIssue.title}</p>}
+            </div>
           </div>
 
           <label className="field">
@@ -267,7 +270,7 @@ export function IssuesPage() {
           <div className="form-actions">
             <button className="primary-button" type="submit">
               <Save aria-hidden="true" size={17} />
-              이슈 저장
+              {selectedIssue ? '수정 완료' : '이슈 생성'}
             </button>
             {selectedIssue && (
               <button className="danger-button" type="button" onClick={handleDelete}>
