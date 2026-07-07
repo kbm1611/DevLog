@@ -7,6 +7,8 @@
 ```text
 DevLog/
   AGENTS.md
+  README.md
+  .gitignore
   backend/
   frontend/
   docs/
@@ -50,13 +52,17 @@ backend/
 frontend/
   index.html
   package.json
+  package-lock.json
   tsconfig.json
   vite.config.ts
   src/
     App.tsx
+    App.test.tsx
     main.tsx
     styles.css
     api/
+      devlogApi.ts
+      devlogApi.test.ts
     components/
     pages/
     types/
@@ -75,6 +81,7 @@ frontend/
 - `frontend/src/components`: 여러 화면에서 재사용하는 UI 컴포넌트를 둔다.
 - `frontend/src/pages`: 라우팅되는 페이지 단위 컴포넌트를 둔다.
 - `frontend/src/types`: API 응답, 요청, 화면 상태 타입을 둔다.
+- `frontend/src/test`: Vitest와 React Testing Library 공통 테스트 설정을 둔다.
 
 ## File Addition Rules
 
@@ -86,6 +93,7 @@ frontend/
 - 서비스 로직 테스트는 기본적으로 `backend/src/test/java/com/devlog/service` 아래에서 시작한다.
 - HTTP 요청/응답, 예외 처리, 입력값 검증 실패 테스트는 `backend/src/test/java/com/devlog/controller` 아래에 둔다.
 - 프론트엔드 기능은 `frontend/src` 아래에서 `api`, `components`, `pages`, `types` 책임에 맞춰 추가한다.
+- 프론트엔드 테스트 파일은 검증 대상과 가까운 `frontend/src` 하위에 `*.test.ts` 또는 `*.test.tsx`로 둔다.
 - 프론트엔드 테스트 유틸리티는 `frontend/src/test` 아래에 둔다.
 - 새 패키지는 기존 책임으로 설명할 수 없을 때만 추가한다.
 

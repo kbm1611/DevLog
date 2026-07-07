@@ -40,31 +40,46 @@ DevLog는 신입 개발자가 SI/공공기관 프로젝트 업무를 하면서 �
 
 ```text
 DevLog/
+  AGENTS.md
   README.md
   backend/
+    build.gradle
+    settings.gradle
+    gradlew.bat
+    src/main/resources/application.yml
     src/main/java/com/devlog/
       controller/     REST API 요청과 응답
       domain/         JPA Entity, BaseEntity, enum
-      dto/            Request/Response DTO
+      dto/            기능별 Request/Response DTO
+        project/
+        worklog/
+        issue/
+        todo/
+        report/
       exception/      공통 예외 처리
       repository/     Spring Data JPA Repository
       service/        비즈니스 로직
-    src/test/java/com/devlog/service/
-      service 계층 테스트
+    src/test/java/com/devlog/
+      controller/     HTTP, 검증, 예외 처리 테스트
+      service/        service 계층 테스트
   frontend/
+    package.json
+    package-lock.json
+    vite.config.ts
+    tsconfig.json
     src/
       api/            Axios API 호출
       components/     공통 레이아웃 컴포넌트
       pages/          라우팅되는 화면
       types/          API/화면 타입
-      test/           프론트 테스트 설정
+      test/           Vitest 설정
   docs/harness/       AI 작업 하네스와 MVP 기준 문서
 ```
 
 ## Domain Model
 
 - `Project`: 프로젝트 이름과 설명을 관리합니다.
-- `WorkLog`: 날짜별 업무 일지, 진행 상태, 메모, 관련 프로젝트를 관리합니다.
+- `WorkLog`: 날짜별 업무 제목, 진행 상태, 메모, 관련 프로젝트를 관리합니다.
 - `Issue`: 이슈 제목, 내용, 원인, 해결 방법, 상태, 관련 프로젝트와 관련 업무 일지를 관리합니다.
 - `Todo`: 날짜별 할 일, 완료 여부, 관련 프로젝트를 관리합니다.
 - `BaseEntity`: 생성일과 수정일을 공통 관리합니다.
@@ -123,7 +138,7 @@ cd backend
 H2 접속 정보:
 
 ```text
-JDBC URL: jdbc:h2:mem:devlog
+JDBC URL: jdbc:h2:mem:devlog;MODE=MySQL;DATABASE_TO_UPPER=false
 User Name: sa
 Password: <empty>
 ```

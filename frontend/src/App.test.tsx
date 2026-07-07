@@ -182,6 +182,23 @@ describe('App', () => {
     expect(apiMock.updateTodo).toHaveBeenCalledWith(1, expect.objectContaining({ completed: true }));
   });
 
+  it('shows project created and updated timestamps in a readable Korean format', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={['/projects']}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    await screen.findByRole('heading', { name: 'Projects' });
+    await user.click(await screen.findByRole('button', { name: projects[0].name }));
+
+    expect(screen.getByText('생성일')).toBeInTheDocument();
+    expect(screen.getByText('수정일')).toBeInTheDocument();
+    expect(screen.getAllByText('2026년 07월 01일 09시 00분')).toHaveLength(2);
+  });
+
   it.each([
     {
       route: '/projects',

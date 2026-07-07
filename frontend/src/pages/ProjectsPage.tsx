@@ -138,11 +138,11 @@ export function ProjectsPage() {
           {selectedProject && (
             <dl className="meta-grid">
               <div>
-                <dt>Created</dt>
+                <dt>생성일</dt>
                 <dd>{formatDateTime(selectedProject.createdAt)}</dd>
               </div>
               <div>
-                <dt>Updated</dt>
+                <dt>수정일</dt>
                 <dd>{formatDateTime(selectedProject.updatedAt)}</dd>
               </div>
             </dl>
@@ -167,5 +167,12 @@ export function ProjectsPage() {
 }
 
 function formatDateTime(value: string) {
-  return value.replace('T', ' ');
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+
+  if (!match) {
+    return value;
+  }
+
+  const [, year, month, day, hour, minute] = match;
+  return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
 }

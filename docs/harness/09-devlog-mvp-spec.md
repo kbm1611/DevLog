@@ -65,7 +65,7 @@ DevLog는 신입 개발자가 SI/공공기관 프로젝트 업무를 하면서 �
 ## Entity Candidates
 
 - `Project`: 프로젝트 이름과 설명을 관리한다.
-- `WorkLog`: 날짜별 업무 일지, 진행 상태, 관련 프로젝트, 메모를 관리한다.
+- `WorkLog`: 날짜별 업무 제목, 진행 상태, 관련 프로젝트, 메모를 관리한다.
 - `Issue`: 이슈 제목, 내용, 원인, 해결 방법, 상태, 관련 프로젝트, 관련 업무 일지를 관리한다.
 - `Todo`: 내일 할 일, 완료 여부, 관련 프로젝트, 기준 날짜를 관리한다.
 - `BaseEntity`: 생성일과 수정일을 관리한다.
@@ -90,8 +90,8 @@ erDiagram
   WORK_LOG {
     Long id
     LocalDate workDate
-    String content
-    WorkStatus status
+    String title
+    WorkLogStatus status
     String memo
     Long projectId
     LocalDateTime createdAt
