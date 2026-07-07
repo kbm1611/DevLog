@@ -11,6 +11,7 @@ import {
 import type { Issue, IssuePayload, IssueStatus, Project, WorkLog } from '../types/devlog';
 
 const statusOptions: IssueStatus[] = ['OPEN', 'RESOLVED', 'HOLD'];
+const statusHelpText = 'OPEN: 해결 필요 · RESOLVED: 해결 완료 · HOLD: 보류';
 
 const emptyForm: IssuePayload = {
   title: '',
@@ -167,119 +168,124 @@ export function IssuesPage() {
         </div>
 
         <form className="panel form-panel" onSubmit={handleSubmit}>
-          <div className="panel-heading">
-            <div>
-              <h2>{selectedIssue ? '이슈 수정 중' : '새 이슈 작성'}</h2>
-              {selectedIssue && <p className="mode-note">현재 수정 중: {selectedIssue.title}</p>}
+            <div className="panel-heading">
+              <div>
+                <h2>{selectedIssue ? '이슈 수정 중' : '새 이슈 작성'}</h2>
+                {selectedIssue && <p className="mode-note">현재 수정 중: {selectedIssue.title}</p>}
+              </div>
             </div>
-          </div>
 
-          <label className="field">
-            <span>이슈 제목</span>
-            <input
-              value={form.title}
-              maxLength={200}
-              onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
-            />
-          </label>
-
-          <label className="field">
-            <span>이슈 내용</span>
-            <textarea
-              value={form.content}
-              maxLength={4000}
-              rows={5}
-              onChange={(event) => setForm((current) => ({ ...current, content: event.target.value }))}
-            />
-          </label>
-
-          <div className="form-grid">
             <label className="field">
-              <span>프로젝트</span>
+              <span>이슈 제목</span>
+              <input
+                value={form.title}
+                maxLength={200}
+                onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
+              />
+            </label>
+
+            <label className="field">
+              <span>이슈 내용</span>
+              <textarea
+                value={form.content}
+                maxLength={4000}
+                rows={5}
+                onChange={(event) => setForm((current) => ({ ...current, content: event.target.value }))}
+              />
+            </label>
+
+            <div className="form-grid">
+              <label className="field">
+                <span>프로젝트</span>
+                <select
+                  value={form.projectId}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, projectId: Number(event.target.value) }))
+                  }
+                >
+                  {projects.map((project) => (
+                    <option key={project.id} value={project.id}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="field">
+                <span>상태</span>
+                <select
+                  aria-label="상태"
+                  aria-describedby="issue-status-help"
+                  value={form.status}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, status: event.target.value as IssueStatus }))
+                  }
+                >
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <label className="field">
+              <span>관련 업무 일지</span>
               <select
-                value={form.projectId}
+                value={form.workLogId ?? ''}
                 onChange={(event) =>
-                  setForm((current) => ({ ...current, projectId: Number(event.target.value) }))
+                  setForm((current) => ({
+                    ...current,
+                    workLogId: event.target.value ? Number(event.target.value) : null,
+                  }))
                 }
               >
-                {projects.map((project) => (
-                  <option key={project.id} value={project.id}>
-                    {project.name}
+                <option value="">선택 안 함</option>
+                {workLogs.map((workLog) => (
+                  <option key={workLog.id} value={workLog.id}>
+                    {workLog.workDate} · {workLog.title}
                   </option>
                 ))}
               </select>
             </label>
 
             <label className="field">
-              <span>상태</span>
-              <select
-                value={form.status}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, status: event.target.value as IssueStatus }))
-                }
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
+              <span>원인</span>
+              <textarea
+                value={form.cause}
+                maxLength={2000}
+                rows={3}
+                onChange={(event) => setForm((current) => ({ ...current, cause: event.target.value }))}
+              />
             </label>
-          </div>
 
-          <label className="field">
-            <span>관련 업무 일지</span>
-            <select
-              value={form.workLogId ?? ''}
-              onChange={(event) =>
-                setForm((current) => ({
-                  ...current,
-                  workLogId: event.target.value ? Number(event.target.value) : null,
-                }))
-              }
-            >
-              <option value="">선택 안 함</option>
-              {workLogs.map((workLog) => (
-                <option key={workLog.id} value={workLog.id}>
-                  {workLog.workDate} · {workLog.title}
-                </option>
-              ))}
-            </select>
-          </label>
+            <label className="field">
+              <span>해결 방법</span>
+              <textarea
+                value={form.solution}
+                maxLength={4000}
+                rows={4}
+                onChange={(event) => setForm((current) => ({ ...current, solution: event.target.value }))}
+              />
+            </label>
 
-          <label className="field">
-            <span>원인</span>
-            <textarea
-              value={form.cause}
-              maxLength={2000}
-              rows={3}
-              onChange={(event) => setForm((current) => ({ ...current, cause: event.target.value }))}
-            />
-          </label>
-
-          <label className="field">
-            <span>해결 방법</span>
-            <textarea
-              value={form.solution}
-              maxLength={4000}
-              rows={4}
-              onChange={(event) => setForm((current) => ({ ...current, solution: event.target.value }))}
-            />
-          </label>
-
-          <div className="form-actions">
-            <button className="primary-button" type="submit">
-              <Save aria-hidden="true" size={17} />
-              {selectedIssue ? '수정 완료' : '이슈 생성'}
-            </button>
-            {selectedIssue && (
-              <button className="danger-button" type="button" onClick={handleDelete}>
-                <Trash2 aria-hidden="true" size={17} />
-                이슈 삭제
+            <div className="form-actions">
+              <button className="primary-button" type="submit">
+                <Save aria-hidden="true" size={17} />
+                {selectedIssue ? '수정 완료' : '이슈 생성'}
               </button>
-            )}
-          </div>
+              {selectedIssue && (
+                <button className="danger-button" type="button" onClick={handleDelete}>
+                  <Trash2 aria-hidden="true" size={17} />
+                  이슈 삭제
+                </button>
+              )}
+            </div>
         </form>
+        <small id="issue-status-help" className="field-help form-outside-help">
+          {statusHelpText}
+        </small>
       </div>
     </section>
   );

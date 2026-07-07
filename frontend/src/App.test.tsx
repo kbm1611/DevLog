@@ -208,6 +208,46 @@ describe('App', () => {
     );
   });
 
+  it('shows status meaning help text on work log and issue forms', async () => {
+    const { unmount } = render(
+      <MemoryRouter initialEntries={['/work-logs']}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    await screen.findByRole('heading', { name: 'Work Logs' });
+    const workLogStatusHelp = screen.getByText(
+      'PLANNED: 예정 · IN_PROGRESS: 진행 중 · DONE: 완료 · BLOCKED: 막힘',
+    );
+    expect(workLogStatusHelp).toBeInTheDocument();
+    expect(workLogStatusHelp.closest('form')).toBeNull();
+    expect(screen.getByLabelText('작업 기록 목록').closest('.panel')?.parentElement).toBe(
+      screen.getByRole('button', { name: '작업 기록 생성' }).closest('form')?.parentElement,
+    );
+    expect(screen.getByRole('combobox', { name: '상태' })).toHaveAccessibleDescription(
+      'PLANNED: 예정 · IN_PROGRESS: 진행 중 · DONE: 완료 · BLOCKED: 막힘',
+    );
+
+    unmount();
+
+    render(
+      <MemoryRouter initialEntries={['/issues']}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    await screen.findByRole('heading', { name: 'Issues' });
+    const issueStatusHelp = screen.getByText('OPEN: 해결 필요 · RESOLVED: 해결 완료 · HOLD: 보류');
+    expect(issueStatusHelp).toBeInTheDocument();
+    expect(issueStatusHelp.closest('form')).toBeNull();
+    expect(screen.getByLabelText('이슈 목록').closest('.panel')?.parentElement).toBe(
+      screen.getByRole('button', { name: '이슈 생성' }).closest('form')?.parentElement,
+    );
+    expect(screen.getByRole('combobox', { name: '상태' })).toHaveAccessibleDescription(
+      'OPEN: 해결 필요 · RESOLVED: 해결 완료 · HOLD: 보류',
+    );
+  });
+
   it("filters todos by today's default range and a changed date range", async () => {
     const user = userEvent.setup();
     const today = new Date().toISOString().slice(0, 10);

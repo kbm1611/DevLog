@@ -10,6 +10,7 @@ import {
 import type { Project, WorkLog, WorkLogPayload, WorkLogStatus } from '../types/devlog';
 
 const statusOptions: WorkLogStatus[] = ['PLANNED', 'IN_PROGRESS', 'DONE', 'BLOCKED'];
+const statusHelpText = 'PLANNED: 예정 · IN_PROGRESS: 진행 중 · DONE: 완료 · BLOCKED: 막힘';
 
 const emptyForm: WorkLogPayload = {
   workDate: '2026-07-07',
@@ -197,90 +198,95 @@ export function WorkLogsPage() {
         </div>
 
         <form className="panel form-panel" onSubmit={handleSubmit}>
-          <div className="panel-heading">
-            <div>
-              <h2>{selectedWorkLog ? '작업 기록 수정 중' : '새 작업 기록 작성'}</h2>
-              {selectedWorkLog && <p className="mode-note">현재 수정 중: {selectedWorkLog.title}</p>}
+            <div className="panel-heading">
+              <div>
+                <h2>{selectedWorkLog ? '작업 기록 수정 중' : '새 작업 기록 작성'}</h2>
+                {selectedWorkLog && <p className="mode-note">현재 수정 중: {selectedWorkLog.title}</p>}
+              </div>
             </div>
-          </div>
 
-          <label className="field">
-            <span>작업일</span>
-            <input
-              type="date"
-              value={form.workDate}
-              onChange={(event) =>
-                setForm((current) => ({ ...current, workDate: event.target.value }))
-              }
-            />
-          </label>
-
-          <label className="field">
-            <span>제목</span>
-            <input
-              value={form.title}
-              onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
-              maxLength={200}
-            />
-          </label>
-
-          <div className="form-grid">
             <label className="field">
-              <span>프로젝트</span>
-              <select
-                value={form.projectId}
+              <span>작업일</span>
+              <input
+                type="date"
+                value={form.workDate}
                 onChange={(event) =>
-                  setForm((current) => ({ ...current, projectId: Number(event.target.value) }))
+                  setForm((current) => ({ ...current, workDate: event.target.value }))
                 }
-              >
-                {projects.map((project) => (
-                  <option key={project.id} value={project.id}>
-                    {project.name}
-                  </option>
-                ))}
-              </select>
+              />
             </label>
 
             <label className="field">
-              <span>상태</span>
-              <select
-                value={form.status}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, status: event.target.value as WorkLogStatus }))
-                }
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
+              <span>제목</span>
+              <input
+                value={form.title}
+                onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
+                maxLength={200}
+              />
             </label>
-          </div>
 
-          <label className="field">
-            <span>메모</span>
-            <textarea
-              value={form.memo}
-              onChange={(event) => setForm((current) => ({ ...current, memo: event.target.value }))}
-              maxLength={2000}
-              rows={7}
-            />
-          </label>
+            <div className="form-grid">
+              <label className="field">
+                <span>프로젝트</span>
+                <select
+                  value={form.projectId}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, projectId: Number(event.target.value) }))
+                  }
+                >
+                  {projects.map((project) => (
+                    <option key={project.id} value={project.id}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-          <div className="form-actions">
-            <button className="primary-button" type="submit">
-              <Save aria-hidden="true" size={17} />
-              {selectedWorkLog ? '수정 완료' : '작업 기록 생성'}
-            </button>
-            {selectedWorkLog && (
-              <button className="danger-button" type="button" onClick={handleDelete}>
-                <Trash2 aria-hidden="true" size={17} />
-                작업 기록 삭제
+              <label className="field">
+                <span>상태</span>
+                <select
+                  aria-label="상태"
+                  aria-describedby="work-log-status-help"
+                  value={form.status}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, status: event.target.value as WorkLogStatus }))
+                  }
+                >
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <label className="field">
+              <span>메모</span>
+              <textarea
+                value={form.memo}
+                onChange={(event) => setForm((current) => ({ ...current, memo: event.target.value }))}
+                maxLength={2000}
+                rows={7}
+              />
+            </label>
+
+            <div className="form-actions">
+              <button className="primary-button" type="submit">
+                <Save aria-hidden="true" size={17} />
+                {selectedWorkLog ? '수정 완료' : '작업 기록 생성'}
               </button>
-            )}
-          </div>
+              {selectedWorkLog && (
+                <button className="danger-button" type="button" onClick={handleDelete}>
+                  <Trash2 aria-hidden="true" size={17} />
+                  작업 기록 삭제
+                </button>
+              )}
+            </div>
         </form>
+        <small id="work-log-status-help" className="field-help form-outside-help">
+          {statusHelpText}
+        </small>
       </div>
     </section>
   );

@@ -248,6 +248,20 @@ button {
   resize: vertical;
 }
 
+.field-help {
+  margin-top: -2px;
+  color: #607086;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.form-outside-help {
+  grid-column: 2;
+  padding: 0 2px;
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -446,6 +460,10 @@ button {
   .form-grid,
   .meta-grid {
     grid-template-columns: 1fr;
+  }
+
+  .form-outside-help {
+    grid-column: auto;
   }
 
 }
