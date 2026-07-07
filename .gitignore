@@ -1,0 +1,6 @@
+backend/build/
+backend/.gradle/
+
+*.log
+.idea/
+.vscode/
