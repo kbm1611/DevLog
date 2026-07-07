@@ -1,7 +1,7 @@
 package com.devlog.domain;
 
 public enum WorkLogStatus {
-    TODO,
+    PLANNED,
     IN_PROGRESS,
     DONE,
     BLOCKED

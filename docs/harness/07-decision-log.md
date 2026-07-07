@@ -14,6 +14,22 @@
 - 검증:
 ```
 
+## 2026-07-07 - WorkLog TODO 상태명을 PLANNED로 변경
+
+- 결정: 업무 일지 진행 상태의 `TODO` 값을 `PLANNED`로 변경한다.
+- 이유: 별도 `Todo` 도메인의 할 일 항목과 업무 일지 상태값 `TODO`가 의미상 겹쳐 보이므로, 업무 일지의 예정/계획 상태는 `PLANNED`로 명확히 구분한다.
+- 영향: 백엔드 `WorkLogStatus`, 프론트엔드 `WorkLogStatus` 타입과 업무 일지 기본값, MVP 스펙 문서의 상태 목록이 `PLANNED` 기준으로 동작한다.
+- 승인: 사용자가 `PLANNED로 바꿔줘!`라고 명시적으로 요청했다.
+- 검증: WorkLog Service 테스트, 프론트엔드 API 테스트, 백엔드 전체 테스트/빌드, 프론트엔드 전체 테스트/빌드를 실행한다.
+
+## 2026-07-07 - Controller 테스트 패키지 허용
+
+- 결정: HTTP 요청/응답, 예외 처리, 입력값 검증 실패 테스트를 위해 `backend/src/test/java/com/devlog/controller` 테스트 패키지를 허용한다.
+- 이유: Service 테스트만으로는 `@Valid`, ControllerAdvice, HTTP 상태 코드, JSON 에러 응답 형식을 직접 검증할 수 없기 때문이다.
+- 영향: 작업자는 Controller 경계 테스트를 `com.devlog.controller` 테스트 패키지에 추가할 수 있다.
+- 승인: 사용자가 예외 처리와 입력값 검증 실패 테스트 보강을 요청했다.
+- 검증: Controller MVC 테스트와 전체 백엔드 빌드를 실행한다.
+
 ## 2026-07-07 - README와 5단계 점검 체크리스트 작성
 
 - 결정: 루트 `README.md`를 현재 MVP 상태와 실행/검증 방법 중심으로 보강하고, 5단계 완료 판단용 `10-phase-5-checklist.md`를 추가한다.

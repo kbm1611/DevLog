@@ -6,7 +6,7 @@ export type Project = {
   updatedAt: string;
 };
 
-export type WorkLogStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'BLOCKED';
+export type WorkLogStatus = 'PLANNED' | 'IN_PROGRESS' | 'DONE' | 'BLOCKED';
 export type IssueStatus = 'OPEN' | 'RESOLVED' | 'HOLD';
 
 export type WorkLog = {

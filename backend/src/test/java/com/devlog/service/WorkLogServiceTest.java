@@ -45,7 +45,7 @@ public class WorkLogServiceTest {
         workLogService.create(new WorkLogCreateRequest(
                 workDate.plusDays(1),
                 "다른 날짜 업무",
-                WorkLogStatus.TODO,
+                WorkLogStatus.PLANNED,
                 "내일 처리",
                 project.id()
         ));
@@ -64,7 +64,7 @@ public class WorkLogServiceTest {
         WorkLogResponse created = workLogService.create(new WorkLogCreateRequest(
                 LocalDate.of(2026, 7, 7),
                 "목록 API 구현",
-                WorkLogStatus.TODO,
+                WorkLogStatus.PLANNED,
                 "컨트롤러 작성 전",
                 project.id()
         ));

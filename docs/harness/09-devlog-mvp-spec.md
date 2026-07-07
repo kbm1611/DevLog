@@ -124,7 +124,7 @@ erDiagram
 
 ## Enums
 
-- `WorkStatus`: `TODO`, `IN_PROGRESS`, `DONE`, `BLOCKED`.
+- `WorkLogStatus`: `PLANNED`, `IN_PROGRESS`, `DONE`, `BLOCKED`.
 - `IssueStatus`: `OPEN`, `RESOLVED`, `HOLD`.
 
 ## DTO Candidates
@@ -158,7 +158,7 @@ erDiagram
 
 - 날짜별 업무 일지 작성.
 - 오늘 한 일 등록.
-- 진행 상태 선택: `TODO`, `IN_PROGRESS`, `DONE`, `BLOCKED`.
+- 진행 상태 선택: `PLANNED`, `IN_PROGRESS`, `DONE`, `BLOCKED`.
 - 관련 프로젝트 선택.
 - 메모 작성.
 - 업무 일지 목록 조회.

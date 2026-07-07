@@ -9,12 +9,12 @@ import {
 } from '../api/devlogApi';
 import type { Project, WorkLog, WorkLogPayload, WorkLogStatus } from '../types/devlog';
 
-const statusOptions: WorkLogStatus[] = ['TODO', 'IN_PROGRESS', 'DONE', 'BLOCKED'];
+const statusOptions: WorkLogStatus[] = ['PLANNED', 'IN_PROGRESS', 'DONE', 'BLOCKED'];
 
 const emptyForm: WorkLogPayload = {
   workDate: '2026-07-07',
   title: '',
-  status: 'TODO',
+  status: 'PLANNED',
   memo: '',
   projectId: 1,
 };

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  createWorkLog,
   createIssue,
   generateWeeklyReport,
   listIssues,
@@ -46,6 +47,26 @@ describe('devlogApi', () => {
 
     expect(httpMock.get).toHaveBeenCalledWith('/work-logs', {
       params: { date: '2026-07-07', projectId: 1 },
+    });
+  });
+
+  it('creates work logs with the planned status', async () => {
+    httpMock.post.mockResolvedValue({ data: { id: 1 } });
+
+    await createWorkLog({
+      workDate: '2026-07-07',
+      title: 'API spec review',
+      status: 'PLANNED',
+      memo: 'Before implementation',
+      projectId: 1,
+    });
+
+    expect(httpMock.post).toHaveBeenCalledWith('/work-logs', {
+      workDate: '2026-07-07',
+      title: 'API spec review',
+      status: 'PLANNED',
+      memo: 'Before implementation',
+      projectId: 1,
     });
   });
 

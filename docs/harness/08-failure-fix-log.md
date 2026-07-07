@@ -31,6 +31,26 @@ TDD의 의도된 RED 실패는 매번 기록하지 않는다. 다만 RED 단계�
 - 문서 오탈자처럼 검증 실패와 연결되지 않는 단순 수정이다.
 - 실패가 현재 작업과 무관하고 수정하지 않았다.
 
+## 2026-07-07 - Gradle test/build 병렬 실행 경합
+
+- 실패 유형: 검증 실패
+- 증상: `backend\gradlew.bat test`와 `backend\gradlew.bat build`를 동시에 실행하자 `build/test-results/test/binary/output.bin` 삭제 실패로 `test` 태스크가 실패했다.
+- 원인: 두 Gradle 검증 명령이 같은 테스트 결과 디렉터리를 동시에 사용했다.
+- 수정: 전체 테스트를 단독으로 재실행했다.
+- 재발 방지: Gradle의 `test`와 `build` 검증은 병렬이 아니라 순차 실행한다.
+- 검증: `backend\gradlew.bat test --rerun-tasks`
+- 관련 파일: 없음
+
+## 2026-07-07 - Controller MVC 예외 처리 테스트 보강 중 실패 수정
+
+- 실패 유형: 테스트 실패
+- 증상: 새 `ControllerExceptionHandlingTest` 실행 시 `@WebMvcTest` 컨텍스트가 JPA Auditing의 `jpaMappingContext` 생성 문제로 로드되지 않았고, 이후 invalid enum 요청은 HTTP 400이지만 공통 `ErrorResponse` JSON을 반환하지 않았다.
+- 원인: MVC 슬라이스 테스트에서 JPA metamodel이 없는 상태로 auditing 설정이 로드되었고, `HttpMessageNotReadableException`을 공통 예외 처리에서 다루지 않았다.
+- 수정: 테스트에서 `JpaMetamodelMappingContext`를 `@MockitoBean`으로 대체하고, `GlobalExceptionHandler`에 `HttpMessageNotReadableException` 처리기를 추가했다.
+- 재발 방지: Project, WorkLog, Issue, Todo, WeeklyReport의 Controller 경계에서 404, Bean Validation 400, unreadable JSON 400, IllegalArgumentException 400 응답 형식을 검증하는 MVC 테스트를 추가했다.
+- 검증: `backend\gradlew.bat test --tests com.devlog.controller.ControllerExceptionHandlingTest`
+- 관련 파일: `backend/src/test/java/com/devlog/controller/ControllerExceptionHandlingTest.java`, `backend/src/main/java/com/devlog/exception/GlobalExceptionHandler.java`
+
 ## 2026-07-07 - Gradle wrapper lock 접근 거부
 
 - 실패 유형: 검증 실패
