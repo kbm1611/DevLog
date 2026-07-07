@@ -42,6 +42,7 @@ backend/
       java/
         com/
           devlog/
+            DatabaseConfigurationTest.java
             controller/
             service/
 ```
@@ -92,6 +93,7 @@ frontend/
 - 날짜 타입은 `LocalDate`, 날짜시간 타입은 `LocalDateTime`을 사용한다.
 - 서비스 로직 테스트는 기본적으로 `backend/src/test/java/com/devlog/service` 아래에서 시작한다.
 - HTTP 요청/응답, 예외 처리, 입력값 검증 실패 테스트는 `backend/src/test/java/com/devlog/controller` 아래에 둔다.
+- 애플리케이션 설정과 Spring profile 검증 테스트는 `backend/src/test/java/com/devlog` 아래에 둘 수 있다.
 - 프론트엔드 기능은 `frontend/src` 아래에서 `api`, `components`, `pages`, `types` 책임에 맞춰 추가한다.
 - 프론트엔드 테스트 파일은 검증 대상과 가까운 `frontend/src` 하위에 `*.test.ts` 또는 `*.test.tsx`로 둔다.
 - 프론트엔드 테스트 유틸리티는 `frontend/src/test` 아래에 둔다.

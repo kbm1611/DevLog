@@ -32,7 +32,8 @@ DevLog는 신입 개발자가 SI/공공기관 프로젝트 업무를 하면서 �
 - Spring Boot.
 - Spring Web.
 - Spring Data JPA.
-- H2 Database 우선 사용.
+- MySQL Database 우선 사용.
+- H2 Database는 테스트 프로필에서 사용.
 - Lombok 사용 가능.
 - Gradle 사용.
 
@@ -46,8 +47,8 @@ DevLog는 신입 개발자가 SI/공공기관 프로젝트 업무를 하면서 �
 
 ### Database
 
-- 초기 개발은 H2로 진행한다.
-- 나중에 MySQL로 변경 가능하도록 JPA 기반으로 설계한다.
+- 앱 실행 기본 DB는 로컬 MySQL `devlog` 데이터베이스를 사용한다.
+- 자동 테스트는 `test` 프로필에서 H2 메모리 DB를 사용한다.
 - 삭제는 처음에는 물리 삭제로 구현해도 된다.
 - Soft delete는 나중에 필요하면 확장한다.
 

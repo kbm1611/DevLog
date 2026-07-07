@@ -1,13 +1,9 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:devlog;MODE=MySQL;DATABASE_TO_UPPER=false
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+    url: "${DEVLOG_DB_URL:jdbc:mysql://localhost:3306/devlog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8}"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: "${DEVLOG_DB_USERNAME:root}"
+    password: "${DEVLOG_DB_PASSWORD:}"
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,3 +14,14 @@ spring:
 
 server:
   port: 8080
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:devlog-test;MODE=MySQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:

@@ -14,6 +14,14 @@
 - 검증:
 ```
 
+## 2026-07-07 - MySQL 영구 저장 전환
+
+- 결정: 앱 실행 기본 DB를 H2 메모리에서 로컬 MySQL `devlog` 데이터베이스로 전환하고, 자동 테스트는 `test` 프로필의 H2 메모리 DB를 사용한다.
+- 이유: H2 메모리 DB는 백엔드 재시작 시 데이터가 사라지므로, 사용자가 프로젝트 재시작 후에도 데이터를 보존하기 위해 MySQL 영구 저장을 요청했다.
+- 영향: `application.yml` 기본 datasource는 MySQL 환경변수 기반 설정을 사용하고, Gradle 테스트 태스크는 `spring.profiles.active=test`로 H2 설정을 사용한다.
+- 승인: 사용자가 MySQL Workbench에서 `devlog` DB를 생성했으며, MySQL 방식으로 영구 저장을 진행하고 비밀번호는 직접 추가하겠다고 명시했다.
+- 검증: `backend\gradlew.bat test --tests com.devlog.DatabaseConfigurationTest`와 `backend\gradlew.bat build`를 실행한다.
+
 ## 2026-07-07 - WorkLog TODO 상태명을 PLANNED로 변경
 
 - 결정: 업무 일지 진행 상태의 `TODO` 값을 `PLANNED`로 변경한다.

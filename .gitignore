@@ -1,5 +1,7 @@
 backend/build/
 backend/.gradle/
+backend/application.properties
+!backend/application.properties.example
 frontend/node_modules/
 frontend/dist/
 frontend/coverage/

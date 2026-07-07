@@ -23,7 +23,8 @@ DevLog는 신입 개발자가 SI/공공기관 프로젝트 업무를 하면서 �
 - Spring Web
 - Spring Data JPA
 - Spring Validation
-- H2 Database
+- MySQL Database
+- H2 Database(test profile)
 - Lombok
 - Gradle
 
@@ -133,15 +134,42 @@ cd backend
 .\gradlew.bat bootRun
 ```
 
-백엔드는 기본적으로 `http://localhost:8080`에서 실행됩니다. H2 콘솔은 `http://localhost:8080/h2-console`에서 사용할 수 있습니다.
+백엔드는 기본적으로 `http://localhost:8080`에서 실행됩니다. 앱 실행 기본 DB는 로컬 MySQL의 `devlog` 데이터베이스입니다.
 
-H2 접속 정보:
+MySQL 준비:
 
 ```text
-JDBC URL: jdbc:h2:mem:devlog;MODE=MySQL;DATABASE_TO_UPPER=false
-User Name: sa
-Password: <empty>
+Database Name: devlog
+Host: localhost
+Port: 3306
+User Name: root
+Password: backend/application.properties에 로컬로 작성
 ```
+
+`backend/application.properties.example`을 참고해 `backend/application.properties`를 만들고, 본인 MySQL 비밀번호를 입력합니다. 이 파일은 `.gitignore`에 포함되어 Git에 올라가지 않습니다.
+
+```properties
+spring.config.activate.on-profile=!test
+spring.datasource.username=root
+spring.datasource.password=your_mysql_password
+```
+
+PowerShell 실행 예시:
+
+```powershell
+cd backend
+.\gradlew.bat bootRun
+```
+
+필요하면 `backend/application.properties`나 다음 환경변수로 기본 접속 정보를 바꿀 수 있습니다.
+
+```text
+DEVLOG_DB_URL
+DEVLOG_DB_USERNAME
+DEVLOG_DB_PASSWORD
+```
+
+자동 테스트는 `test` 프로필에서 H2 메모리 DB(`jdbc:h2:mem:devlog-test`)를 사용하므로 로컬 MySQL 실행 여부와 별개로 검증할 수 있습니다.
 
 ### Frontend
 
