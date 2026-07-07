@@ -182,6 +182,64 @@ describe('App', () => {
     expect(apiMock.updateTodo).toHaveBeenCalledWith(1, expect.objectContaining({ completed: true }));
   });
 
+  it('filters work logs by start and end date with project', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={['/work-logs']}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    await screen.findByRole('heading', { name: 'Work Logs' });
+    apiMock.listWorkLogs.mockClear();
+
+    await user.type(screen.getByLabelText('시작일'), '2026-07-01');
+    await user.clear(screen.getByLabelText('종료일'));
+    await user.type(screen.getByLabelText('종료일'), '2026-07-07');
+    await user.selectOptions(screen.getByLabelText('프로젝트 필터'), '2');
+
+    await waitFor(() =>
+      expect(apiMock.listWorkLogs).toHaveBeenLastCalledWith({
+        startDate: '2026-07-01',
+        endDate: '2026-07-07',
+        projectId: 2,
+      }),
+    );
+  });
+
+  it("filters todos by today's default range and a changed date range", async () => {
+    const user = userEvent.setup();
+    const today = new Date().toISOString().slice(0, 10);
+
+    render(
+      <MemoryRouter initialEntries={['/todos']}>
+        <App />
+      </MemoryRouter>,
+    );
+
+    await screen.findByRole('heading', { name: 'Todos' });
+    await waitFor(() =>
+      expect(apiMock.listTodos).toHaveBeenCalledWith({
+        startDate: today,
+        endDate: today,
+      }),
+    );
+
+    apiMock.listTodos.mockClear();
+    await user.clear(screen.getByLabelText('시작일'));
+    await user.type(screen.getByLabelText('시작일'), '2026-07-08');
+    await user.clear(screen.getByLabelText('종료일'));
+    await user.type(screen.getByLabelText('종료일'), '2026-07-10');
+
+    await waitFor(() =>
+      expect(apiMock.listTodos).toHaveBeenLastCalledWith({
+        startDate: '2026-07-08',
+        endDate: '2026-07-10',
+      }),
+    );
+  });
+
   it('shows project created and updated timestamps in a readable Korean format', async () => {
     const user = userEvent.setup();
 

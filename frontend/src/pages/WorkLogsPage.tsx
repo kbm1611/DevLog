@@ -23,7 +23,8 @@ export function WorkLogsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [workLogs, setWorkLogs] = useState<WorkLog[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [dateFilter, setDateFilter] = useState('');
+  const [startDateFilter, setStartDateFilter] = useState('');
+  const [endDateFilter, setEndDateFilter] = useState('');
   const [projectFilter, setProjectFilter] = useState('');
   const [form, setForm] = useState<WorkLogPayload>(emptyForm);
 
@@ -47,15 +48,39 @@ export function WorkLogsPage() {
 
   useEffect(() => {
     void refreshWorkLogs();
-  }, [dateFilter, projectFilter]);
+  }, [startDateFilter, endDateFilter, projectFilter]);
 
   async function refreshWorkLogs() {
-    setWorkLogs(
-      await listWorkLogs({
-        date: dateFilter || undefined,
-        projectId: projectFilter ? Number(projectFilter) : undefined,
-      }),
-    );
+    const filters: { startDate?: string; endDate?: string; projectId?: number } = {};
+    if (startDateFilter && endDateFilter) {
+      filters.startDate = startDateFilter;
+      filters.endDate = endDateFilter;
+    }
+    if (projectFilter) {
+      filters.projectId = Number(projectFilter);
+    }
+
+    setWorkLogs(await listWorkLogs(filters));
+  }
+
+  function handleStartDateFilterChange(value: string) {
+    setStartDateFilter(value);
+    setEndDateFilter((current) => {
+      if (!value) {
+        return current;
+      }
+      return !current || value > current ? value : current;
+    });
+  }
+
+  function handleEndDateFilterChange(value: string) {
+    setEndDateFilter(value);
+    setStartDateFilter((current) => {
+      if (!value) {
+        return current;
+      }
+      return !current || current > value ? value : current;
+    });
   }
 
   function selectWorkLog(workLog: WorkLog) {
@@ -118,11 +143,19 @@ export function WorkLogsPage() {
 
       <div className="filters">
         <label className="field inline-field">
-          <span>날짜 필터</span>
+          <span>시작일</span>
           <input
             type="date"
-            value={dateFilter}
-            onChange={(event) => setDateFilter(event.target.value)}
+            value={startDateFilter}
+            onChange={(event) => handleStartDateFilterChange(event.target.value)}
+          />
+        </label>
+        <label className="field inline-field">
+          <span>종료일</span>
+          <input
+            type="date"
+            value={endDateFilter}
+            onChange={(event) => handleEndDateFilterChange(event.target.value)}
           />
         </label>
         <label className="field inline-field">

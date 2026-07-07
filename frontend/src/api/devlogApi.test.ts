@@ -6,6 +6,7 @@ import {
   generateWeeklyReport,
   listIssues,
   listProjects,
+  listTodos,
   listWorkLogs,
   updateTodo,
 } from './devlogApi';
@@ -43,10 +44,20 @@ describe('devlogApi', () => {
   it('sends work log filters as query parameters', async () => {
     httpMock.get.mockResolvedValue({ data: [] });
 
-    await listWorkLogs({ date: '2026-07-07', projectId: 1 });
+    await listWorkLogs({ startDate: '2026-07-01', endDate: '2026-07-07', projectId: 1 });
 
     expect(httpMock.get).toHaveBeenCalledWith('/work-logs', {
-      params: { date: '2026-07-07', projectId: 1 },
+      params: { startDate: '2026-07-01', endDate: '2026-07-07', projectId: 1 },
+    });
+  });
+
+  it('sends todo date ranges as query parameters', async () => {
+    httpMock.get.mockResolvedValue({ data: [] });
+
+    await listTodos({ startDate: '2026-07-08', endDate: '2026-07-10' });
+
+    expect(httpMock.get).toHaveBeenCalledWith('/todos', {
+      params: { startDate: '2026-07-08', endDate: '2026-07-10' },
     });
   });
 

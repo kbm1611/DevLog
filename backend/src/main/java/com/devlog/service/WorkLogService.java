@@ -36,7 +36,11 @@ public class WorkLogService {
     }
 
     public List<WorkLogResponse> findAll(LocalDate workDate, Long projectId) {
-        return findByFilters(workDate, projectId).stream()
+        return findAll(workDate, projectId, null, null);
+    }
+
+    public List<WorkLogResponse> findAll(LocalDate workDate, Long projectId, LocalDate startDate, LocalDate endDate) {
+        return findByFilters(workDate, projectId, startDate, endDate).stream()
                 .map(WorkLogResponse::from)
                 .toList();
     }
@@ -65,7 +69,18 @@ public class WorkLogService {
         workLogRepository.delete(workLog);
     }
 
-    private List<WorkLog> findByFilters(LocalDate workDate, Long projectId) {
+    private List<WorkLog> findByFilters(LocalDate workDate, Long projectId, LocalDate startDate, LocalDate endDate) {
+        if (startDate != null || endDate != null) {
+            validateRange(startDate, endDate);
+            if (projectId != null) {
+                return workLogRepository.findByWorkDateBetweenAndProjectIdOrderByWorkDateDescIdDesc(
+                        startDate,
+                        endDate,
+                        projectId
+                );
+            }
+            return workLogRepository.findByWorkDateBetweenOrderByWorkDateDescIdDesc(startDate, endDate);
+        }
         if (workDate != null && projectId != null) {
             return workLogRepository.findByWorkDateAndProjectIdOrderByIdDesc(workDate, projectId);
         }
@@ -76,6 +91,15 @@ public class WorkLogService {
             return workLogRepository.findByProjectIdOrderByIdDesc(projectId);
         }
         return workLogRepository.findAllByOrderByWorkDateDescIdDesc();
+    }
+
+    private void validateRange(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("startDate and endDate must be provided together.");
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("startDate must be before or equal to endDate.");
+        }
     }
 
     public WorkLog getWorkLog(Long id) {

@@ -14,6 +14,8 @@ import type {
 
 type WorkLogFilters = {
   date?: string;
+  startDate?: string;
+  endDate?: string;
   projectId?: number;
 };
 
@@ -24,6 +26,8 @@ type IssueFilters = {
 
 type TodoFilters = {
   date?: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 const http = axios.create({ baseURL: '/api' });

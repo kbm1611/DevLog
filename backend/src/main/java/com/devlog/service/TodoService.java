@@ -35,7 +35,11 @@ public class TodoService {
     }
 
     public List<TodoResponse> findAll(LocalDate todoDate) {
-        return findByFilter(todoDate).stream()
+        return findAll(todoDate, null, null);
+    }
+
+    public List<TodoResponse> findAll(LocalDate todoDate, LocalDate startDate, LocalDate endDate) {
+        return findByFilter(todoDate, startDate, endDate).stream()
                 .map(TodoResponse::from)
                 .toList();
     }
@@ -68,11 +72,24 @@ public class TodoService {
                 .orElseThrow(() -> new NotFoundException("Todo not found. id=" + id));
     }
 
-    private List<Todo> findByFilter(LocalDate todoDate) {
+    private List<Todo> findByFilter(LocalDate todoDate, LocalDate startDate, LocalDate endDate) {
+        if (startDate != null || endDate != null) {
+            validateRange(startDate, endDate);
+            return todoRepository.findByTodoDateBetweenOrderByTodoDateDescIdDesc(startDate, endDate);
+        }
         if (todoDate != null) {
             return todoRepository.findByTodoDateOrderByIdDesc(todoDate);
         }
         return todoRepository.findAllByOrderByTodoDateDescIdDesc();
+    }
+
+    private void validateRange(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("startDate and endDate must be provided together.");
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("startDate must be before or equal to endDate.");
+        }
     }
 
     private Project getOptionalProject(Long projectId) {

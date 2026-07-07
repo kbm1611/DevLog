@@ -45,6 +45,42 @@ public class TodoServiceTest {
     }
 
     @Test
+    @DisplayName("finds todos by inclusive date range")
+    void findTodosByDateRange() {
+        ProjectResponse project = projectService.create(new ProjectCreateRequest("Range Project", "Date filtering"));
+        LocalDate startDate = LocalDate.of(2026, 7, 7);
+        LocalDate endDate = LocalDate.of(2026, 7, 8);
+
+        todoService.create(new TodoCreateRequest(startDate.minusDays(1), "Before range", false, project.id()));
+        todoService.create(new TodoCreateRequest(startDate, "Start date todo", false, project.id()));
+        todoService.create(new TodoCreateRequest(endDate, "End date todo", true, project.id()));
+        todoService.create(new TodoCreateRequest(endDate.plusDays(1), "After range", false, project.id()));
+
+        List<TodoResponse> results = todoService.findAll(null, startDate, endDate);
+
+        assertThat(results)
+                .extracting(TodoResponse::content)
+                .containsExactly("End date todo", "Start date todo");
+    }
+
+    @Test
+    @DisplayName("rejects incomplete or reversed todo date ranges")
+    void rejectInvalidTodoDateRanges() {
+        LocalDate startDate = LocalDate.of(2026, 7, 8);
+        LocalDate endDate = LocalDate.of(2026, 7, 7);
+
+        assertThatThrownBy(() -> todoService.findAll(null, startDate, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("startDate and endDate must be provided together.");
+        assertThatThrownBy(() -> todoService.findAll(null, null, endDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("startDate and endDate must be provided together.");
+        assertThatThrownBy(() -> todoService.findAll(null, startDate, endDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("startDate must be before or equal to endDate.");
+    }
+
+    @Test
     @DisplayName("updates a todo and completion flag")
     void updateTodo() {
         ProjectResponse project = projectService.create(new ProjectCreateRequest("Admin System", "Development"));

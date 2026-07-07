@@ -58,6 +58,86 @@ public class WorkLogServiceTest {
     }
 
     @Test
+    @DisplayName("업무 일지를 시작일과 종료일 범위로 필터링한다")
+    void findWorkLogsByDateRange() {
+        ProjectResponse project = projectService.create(new ProjectCreateRequest("범위 프로젝트", "범위 테스트"));
+        LocalDate startDate = LocalDate.of(2026, 7, 7);
+        LocalDate endDate = LocalDate.of(2026, 7, 8);
+
+        workLogService.create(new WorkLogCreateRequest(
+                startDate.minusDays(1),
+                "범위 이전 업무",
+                WorkLogStatus.DONE,
+                "제외",
+                project.id()
+        ));
+        workLogService.create(new WorkLogCreateRequest(
+                startDate,
+                "범위 시작 업무",
+                WorkLogStatus.IN_PROGRESS,
+                "포함",
+                project.id()
+        ));
+        workLogService.create(new WorkLogCreateRequest(
+                endDate,
+                "범위 종료 업무",
+                WorkLogStatus.PLANNED,
+                "포함",
+                project.id()
+        ));
+        workLogService.create(new WorkLogCreateRequest(
+                endDate.plusDays(1),
+                "범위 이후 업무",
+                WorkLogStatus.BLOCKED,
+                "제외",
+                project.id()
+        ));
+
+        List<WorkLogResponse> results = workLogService.findAll(null, null, startDate, endDate);
+
+        assertThat(results)
+                .extracting(WorkLogResponse::title)
+                .containsExactly("범위 종료 업무", "범위 시작 업무");
+    }
+
+    @Test
+    @DisplayName("업무 일지 날짜 범위와 프로젝트 필터를 함께 적용한다")
+    void findWorkLogsByDateRangeAndProject() {
+        ProjectResponse backend = projectService.create(new ProjectCreateRequest("Backend", "API"));
+        ProjectResponse frontend = projectService.create(new ProjectCreateRequest("Frontend", "UI"));
+        LocalDate startDate = LocalDate.of(2026, 7, 7);
+        LocalDate endDate = LocalDate.of(2026, 7, 9);
+
+        workLogService.create(new WorkLogCreateRequest(
+                startDate,
+                "Backend 범위 업무",
+                WorkLogStatus.DONE,
+                "포함",
+                backend.id()
+        ));
+        workLogService.create(new WorkLogCreateRequest(
+                startDate.plusDays(1),
+                "Frontend 범위 업무",
+                WorkLogStatus.DONE,
+                "다른 프로젝트",
+                frontend.id()
+        ));
+        workLogService.create(new WorkLogCreateRequest(
+                endDate.plusDays(1),
+                "Backend 범위 밖 업무",
+                WorkLogStatus.DONE,
+                "범위 밖",
+                backend.id()
+        ));
+
+        List<WorkLogResponse> results = workLogService.findAll(null, backend.id(), startDate, endDate);
+
+        assertThat(results)
+                .extracting(WorkLogResponse::title)
+                .containsExactly("Backend 범위 업무");
+    }
+
+    @Test
     @DisplayName("업무 일지 내용을 수정한다")
     void updateWorkLog() {
         ProjectResponse project = projectService.create(new ProjectCreateRequest("내부 관리자", "개발"));

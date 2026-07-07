@@ -10,6 +10,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     List<Todo> findByTodoDateOrderByIdDesc(LocalDate todoDate);
 
+    List<Todo> findByTodoDateBetweenOrderByTodoDateDescIdDesc(LocalDate startDate, LocalDate endDate);
+
     List<Todo> findByTodoDateBetweenOrderByTodoDateAscIdAsc(LocalDate startDate, LocalDate endDate);
 
     List<Todo> findAllByOrderByTodoDateDescIdDesc();

@@ -14,7 +14,8 @@ export function TodosPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [dateFilter, setDateFilter] = useState(todayIso());
+  const [startDateFilter, setStartDateFilter] = useState(todayIso());
+  const [endDateFilter, setEndDateFilter] = useState(todayIso());
   const [form, setForm] = useState<TodoPayload>(emptyForm);
 
   const selectedTodo = useMemo(
@@ -28,17 +29,43 @@ export function TodosPage() {
 
   useEffect(() => {
     void refreshTodos();
-  }, [dateFilter]);
+  }, [startDateFilter, endDateFilter]);
 
   async function refreshTodos() {
-    setTodos(await listTodos({ date: dateFilter || undefined }));
+    const filters: { startDate?: string; endDate?: string } = {};
+    if (startDateFilter && endDateFilter) {
+      filters.startDate = startDateFilter;
+      filters.endDate = endDateFilter;
+    }
+
+    setTodos(await listTodos(filters));
+  }
+
+  function handleStartDateFilterChange(value: string) {
+    setStartDateFilter(value);
+    setEndDateFilter((current) => {
+      if (!value) {
+        return current;
+      }
+      return !current || value > current ? value : current;
+    });
+  }
+
+  function handleEndDateFilterChange(value: string) {
+    setEndDateFilter(value);
+    setStartDateFilter((current) => {
+      if (!value) {
+        return current;
+      }
+      return !current || current > value ? value : current;
+    });
   }
 
   function startNewTodo() {
     setSelectedId(null);
     setForm({
       ...emptyForm,
-      todoDate: dateFilter || todayIso(),
+      todoDate: startDateFilter || todayIso(),
     });
   }
 
@@ -103,8 +130,20 @@ export function TodosPage() {
 
       <div className="filters">
         <label className="field inline-field">
-          <span>날짜</span>
-          <input type="date" value={dateFilter} onChange={(event) => setDateFilter(event.target.value)} />
+          <span>시작일</span>
+          <input
+            type="date"
+            value={startDateFilter}
+            onChange={(event) => handleStartDateFilterChange(event.target.value)}
+          />
+        </label>
+        <label className="field inline-field">
+          <span>종료일</span>
+          <input
+            type="date"
+            value={endDateFilter}
+            onChange={(event) => handleEndDateFilterChange(event.target.value)}
+          />
         </label>
       </div>
 

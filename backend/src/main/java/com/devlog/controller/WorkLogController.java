@@ -32,9 +32,11 @@ public class WorkLogController {
     @GetMapping
     public List<WorkLogResponse> findAll(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false) Long projectId
     ) {
-        return workLogService.findAll(date, projectId);
+        return workLogService.findAll(date, projectId, startDate, endDate);
     }
 
     @PostMapping
