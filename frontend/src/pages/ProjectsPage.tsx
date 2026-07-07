@@ -173,6 +173,6 @@ function formatDateTime(value: string) {
     return value;
   }
 
-  const [, year, month, day, hour, minute] = match;
-  return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
+  const [, year, month, day] = match;
+  return `${year}년 ${month}월 ${day}일`;
 }

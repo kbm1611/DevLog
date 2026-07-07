@@ -196,7 +196,7 @@ describe('App', () => {
 
     expect(screen.getByText('생성일')).toBeInTheDocument();
     expect(screen.getByText('수정일')).toBeInTheDocument();
-    expect(screen.getAllByText('2026년 07월 01일 09시 00분')).toHaveLength(2);
+    expect(screen.getAllByText('2026년 07월 01일')).toHaveLength(2);
   });
 
   it.each([
