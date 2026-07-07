@@ -8,6 +8,7 @@
 DevLog/
   AGENTS.md
   backend/
+  frontend/
   docs/
     harness/
 ```
@@ -42,20 +43,48 @@ backend/
             service/
 ```
 
+## Frontend Structure
+
+```text
+frontend/
+  index.html
+  package.json
+  tsconfig.json
+  vite.config.ts
+  src/
+    App.tsx
+    main.tsx
+    styles.css
+    api/
+    components/
+    pages/
+    types/
+    test/
+```
+
 ## Allowed Package Responsibilities
 
 - `controller`: HTTP 요청과 응답 경계를 담당한다. 비즈니스 규칙을 직접 구현하지 않는다.
 - `service`: 유스케이스와 비즈니스 흐름을 담당한다.
 - `repository`: Spring Data JPA 저장소 인터페이스를 둔다.
-- `domain`: JPA 엔티티, 도메인 enum, 도메인 기본 타입을 둔다.
-- `dto`: API 요청과 응답 DTO를 둔다. 기능별 하위 패키지를 사용할 수 있다.
+- `domain`: JPA 엔티티, `BaseEntity`, 도메인 enum, 도메인 기본 타입을 둔다.
+- `dto`: API 요청과 응답 DTO를 둔다. Request와 Response는 분리하고, 기능별 하위 패키지를 사용할 수 있다.
 - `exception`: 공통 예외, 에러 응답, 전역 예외 처리를 둔다.
+- `frontend/src/api`: Axios 기반 API 호출 코드를 둔다.
+- `frontend/src/components`: 여러 화면에서 재사용하는 UI 컴포넌트를 둔다.
+- `frontend/src/pages`: 라우팅되는 페이지 단위 컴포넌트를 둔다.
+- `frontend/src/types`: API 응답, 요청, 화면 상태 타입을 둔다.
 
 ## File Addition Rules
 
 - 새 API는 기존 기능 단위와 같은 이름 규칙을 따른다.
 - 새 도메인 기능은 필요에 따라 `domain`, `repository`, `service`, `controller`, `dto/<feature>`에 추가한다.
+- Entity는 Controller에서 직접 반환하지 않고 Response DTO로 변환한다.
+- 생성일/수정일 공통 필드는 `BaseEntity`로 분리한다.
+- 날짜 타입은 `LocalDate`, 날짜시간 타입은 `LocalDateTime`을 사용한다.
 - 테스트는 기본적으로 `backend/src/test/java/com/devlog/service` 아래 서비스 테스트로 시작한다.
+- 프론트엔드 기능은 `frontend/src` 아래에서 `api`, `components`, `pages`, `types` 책임에 맞춰 추가한다.
+- 프론트엔드 테스트 유틸리티는 `frontend/src/test` 아래에 둔다.
 - 새 패키지는 기존 책임으로 설명할 수 없을 때만 추가한다.
 
 ## Package Move Rules
@@ -71,6 +100,7 @@ backend/
 다음 변경은 구조 예외로 본다.
 
 - `backend` 밖 새 실행 모듈 추가.
+- `frontend` 밖 새 실행 모듈 추가.
 - `com.devlog` 아래 새 최상위 패키지 추가.
 - 기존 계층형 구조를 도메인별 구조로 재편.
 - 빌드 도구, Java 버전, Spring Boot 주 버전 변경.

@@ -21,5 +21,8 @@
 ## Current Project Default
 
 - 중심 프로젝트: `backend`
-- 기본 기술: Java 17, Spring Boot, Gradle
-- 기본 검증 명령: `backend\gradlew.bat build`
+- 프로젝트 성격: 바이브 프로젝트
+- Backend 기본 기술: Java 17, Spring Boot, Spring Web, Spring Data JPA, H2, Gradle
+- Frontend 기본 기술: React, Vite, Axios, 일반 CSS 또는 CSS Module
+- 기본 검증 명령: `backend\gradlew.bat build`, 프론트엔드 변경 시 `frontend\npm run build`
+- 기본 개발 방식: TDD. 코드 변경은 실패하는 테스트를 먼저 작성하고, 실패 이유를 확인한 뒤 최소 구현으로 통과시킨다.
